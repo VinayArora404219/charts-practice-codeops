@@ -1,12 +1,19 @@
 from pycoingecko import CoinGeckoAPI
-import matplotlib.pyplot as plt
-import numpy as np
+
+from utils import draw_bar_chart, draw_pie_chart
 
 if __name__ == '__main__':
     cg = CoinGeckoAPI()
+
+    # getting list of names of first 5 coins from CoinGeckoAPI
     list_of_first_5_coins = cg.get_coins_list()[0: 5]
 
-    names_list_of_first_5_coins = list(map(lambda x: x['name'], list_of_first_5_coins))
+    # extracting list of names of first 5 coins
+    names_list_of_first_5_coins = list(
+        map(lambda x: x['name'], list_of_first_5_coins)
+    )
+
+    # getting list of price of first 5 coins from CoinGeckoAPI
     price_list_of_first_5_coins = list(
         map(lambda x: cg.get_price(ids=x['id'], vs_currencies='usd')[x['id']]['usd'], list_of_first_5_coins)
     )
@@ -17,21 +24,20 @@ if __name__ == '__main__':
             'size': 16,
             }
 
-    X_axis = np.arange(len(names_list_of_first_5_coins))
+    draw_bar_chart(
+        names_list_of_first_5_coins,
+        price_list_of_first_5_coins,
+        "Cryptocurrency names",
+        "price(usd)",
+        "Crytocurrency data",
+        font=font
+    )
 
-    # for bar chart
-    plt.bar(X_axis, price_list_of_first_5_coins, 0.4, label='Cryptocurrencies')
-    plt.xticks(X_axis, names_list_of_first_5_coins)
-    plt.xlabel("Cryptocurrency names", fontdict=font)
-    plt.ylabel("price(usd)", fontdict=font)
-    plt.title('Crytocurrency data')
-    plt.legend()
-    plt.show()
-
-    # for pie chart
-    plt.pie(price_list_of_first_5_coins, labels=names_list_of_first_5_coins, autopct='%1.2f%%')
-    plt.title('Crytocurrency data')
-    plt.show()
+    draw_pie_chart(
+        names_list_of_first_5_coins,
+        price_list_of_first_5_coins,
+        'Cryptocurrency data'
+    )
 
 
 
